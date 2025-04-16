@@ -2,13 +2,19 @@ import { NextRequest, NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/db/connection';
 import EWallet from '@/models/EWallet';
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+// النوع الجديد لتوقيع الـ GET handler
+type Params = {
+  params: {
+    id: string;
+  };
+};
+
+export async function GET(request: NextRequest, context: Params) {
+  const { id } = context.params;
+
   try {
     await connectToDatabase();
-    const wallet = await EWallet.findById(params.id);
+    const wallet = await EWallet.findById(id);
     
     if (!wallet) {
       return NextResponse.json(
